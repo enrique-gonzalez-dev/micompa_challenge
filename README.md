@@ -1,10 +1,20 @@
 # README
 
-
+**Require**
 * Ruby version '2.6.6'
 * Rails version '~> 6.0.4', '>= 6.0.4.7'
+* Postgres '14.2'
 
 * Configuration
+
+Create application.yml in /config/application.yml and add enviroment variables
+
+```
+  DATABASE_NAME: "micompa_db"
+  DATABASE_USERNAME: "user_postgres"
+  DATABASE_PASSWORD: "pasword_postgres"
+  DATABASE_HOST: "localhost"
+```
 
 run ``` bundle install ```
 
