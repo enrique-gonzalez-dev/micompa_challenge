@@ -5,8 +5,7 @@
 * Rails version '~> 6.0.4', '>= 6.0.4.7'
 * Postgres '14.2'
 
-* Configuration
-
+**Configuration**
 Create application.yml in /config/application.yml and add enviroment variables
 
 ```
