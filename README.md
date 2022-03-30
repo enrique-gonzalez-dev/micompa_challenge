@@ -17,13 +17,13 @@ Create application.yml in /config/application.yml and add enviroment variables
 
 run ``` bundle install ```
 
-* Database creation
+**Database creation**
 
   run ``` bundle exec rails db:create ```
 
   run ``` bundle exec rails db:migrate ```
 
-* Deployment
+**Deployment**
 
   run ``` bundle exec rails s ```
 
