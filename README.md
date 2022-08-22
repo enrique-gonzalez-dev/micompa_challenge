@@ -49,6 +49,5 @@ run ``` bundle install ```
     body: { "count_mutant_dna": 6, "count_human_dna": 11, "ratio": 0.5454545454545454 }
     
 * **Production URL**
-
-    **https://micompa-challenge.herokuapp.com/**
+    [Heroku](https://micompa-challenge.herokuapp.com/){:target="_blank" rel="noopener"}
     
