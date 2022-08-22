@@ -32,7 +32,7 @@ run ``` bundle install ```
 * **POST /mutant**
 
   Requirements:
-    Body: { "data" : [ "TATAAA", "TTTAAC", "TAGGAA", "TAGGCA", "AGACCA", "TACCAG" ] }
+    Body: { "dna" : [ "TATAAA", "TTTAAC", "TAGGAA", "TAGGCA", "AGACCA", "TACCAG" ] }
     
     Format: JSON
     
