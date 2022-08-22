@@ -1,31 +1,24 @@
 
-class PeopleController < ApplicationController  
-  before_action :set_person, only: [:show, :update, :destroy]
-  before_action :data_valid, only: [:create]
-  def index
-    @people = Person.all
-    render json: @people
-  end
-
-  def show
-    render json: @person
-  end
+class PeopleController < ApplicationController
+  include Response
 
   def create
     @person = Person.new()
-    if @data_valid
-      data = params["data"]
+    data = params["dna"]
+    if validate_data(data)
       @person.dna_string = JSON.generate(data)
       @person.save
+      unless @person.errors&.present?
+        if @person.is_mutant?
+          json_response({ is_mutant: true }, :ok)
+        else
+          json_response({ is_mutant: false }, :forbidden)
+        end
+      else
+        json_error_response(@person.errors.full_messages, :bad_request) 
+      end
     else
-      return render status: :bad_request, json: { error: "Invalid DNA string" }
-    end
-
-    if !@person.errors&.present?
-      render status: :ok, json: { is_mutant: true } if @person.is_mutant?
-      render status: :forbidden, json: { is_mutant: false } if !@person.is_mutant?
-    else
-      render status: :bad_request, json: {message: @person.errors.full_messages}
+      json_error_response("Invalid data", :unprocessable_entity)
     end
   end
   
@@ -35,45 +28,10 @@ class PeopleController < ApplicationController
       count_human_dna: get_humans,
       ratio: get_ratio
     }
-    render status: :ok, json: stats.to_json
-  end
-
-  def update
-    if @person.update(person_params)
-      render json: @person
-    else
-      render json: @person.errors, status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @person.destroy
-  end
-
-  def data_valid
-    @data_valid = false
-    if params["data"]
-      data = params["data"]
-      if data.class == Array && data.length == 6 && check_data(data)
-        @data_valid = true
-      end
-    end
-  end
-
-  def check_data(data)
-    check_data = true
-    data&.each { |datum| check_data = false if datum.length != 6 }
-    check_data
+    json_response(stats, :ok)
   end
 
   private
-    def set_person
-      @person = Person.find(params[:id])
-    end
-
-    def person_params
-      params.require(:person).permit(:dna_string, :is_mutant)
-    end
 
     def get_mutants
       Person.where(is_mutant: true)&.count
@@ -84,6 +42,23 @@ class PeopleController < ApplicationController
     end
 
     def get_ratio
-      get_mutants.to_f / get_humans.to_f if get_humans > 0
+      get_mutants / get_humans if get_humans > 0
+    end
+
+    def validate_data(data)
+      data_valid = false
+      if data
+        data = data
+        if data.class == Array && data.length == 6 && check_data(data)
+          data_valid = true
+        end
+      end
+      data_valid
+    end
+  
+    def check_data(data)
+      check_data = true
+      data&.each { |datum| check_data = false if datum.length != 6 }
+      check_data
     end
 end

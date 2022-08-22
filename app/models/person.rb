@@ -1,18 +1,24 @@
 class Person < ApplicationRecord
   require 'json'
   require 'matrix'
-  validates :dna_string, uniqueness: true
-  after_create :validate_mutant
 
-  def validate_mutant
+  validates :dna_string, uniqueness: true
+  after_create :define_type_of_person
+
+  def define_type_of_person
+    self.update(is_mutant: validate_mutant(dna_string))
+  end
+
+  private
+
+  def validate_mutant(dna_string)
     dna = JSON.parse(dna_string)
     m = Matrix.build(6) {|row, col| col = dna[row][col] }
     dna_arrays = []
     dna_arrays += get_columns(m)
     dna_arrays += get_rows(m)
     dna_arrays += get_diagonals(m)
-    self.is_mutant = determinate(dna_arrays)
-    self.save
+    determinate(dna_arrays)
   end
 
   def get_columns(matrix)
