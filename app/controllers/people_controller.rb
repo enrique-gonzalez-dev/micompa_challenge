@@ -36,13 +36,13 @@ class PeopleController < ApplicationController
     def get_mutants
       Person.where(is_mutant: true)&.count
     end
-
+    
     def get_humans
-      Person.all&.count
+      Person.where(is_mutant: false)&.count
     end
 
     def get_ratio
-      get_mutants / get_humans if get_humans > 0
+      get_mutants.to_f / get_humans.to_f if get_humans > 0
     end
 
     def validate_data(data)
